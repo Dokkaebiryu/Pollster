@@ -1,0 +1,349 @@
+/* 
+   Pollster CSS profile
+   containing:
+   - theme tokens, - type scale, - layout chrome.
+   Dash serves everything in assets/ automatically; so no additional imports are needed.
+   'themes' (light & dark) are swapped by a server-side callback in app.py that
+   sets .theme-light / .theme-dark on a wrapper div, so every panel re-colours
+   from these variables. (An earlier clientside implementation setting an
+   attribute on <html> was replaced after it failed in the Dash renderer.) */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+ 
+:root {
+  /* type */
+  --fs-xs: 0.6875rem;   /* 11px (buttons, fine print)            */
+  --fs-sm: 0.75rem;     /* 12px (section labels, metadata)       */
+  --fs-md: 0.8125rem;   /* 13px (body text, party rows, numbers */
+  --fs-lg: 0.9375rem;   /* 15px (panel headings)                 */
+  --fs-title: 1.5rem;   /* 24px (app title only)                 */
+  --radius: 8px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+ 
+/* ---- LIGHT (default) ---- */
+.theme-light {
+  --bg: #f4f5f7;
+  --panel-bg: #ffffff;
+  --panel-alt: #fafafa;
+  --border: #d8dce2;
+  --border-soft: #e6e9ee;
+  --text: #1d2027;
+  --text-muted: #5a616e;
+  --text-faint: #687181;   /* WCAG AA: 4.51-4.92:1 on all light backgrounds */
+  --shadow: 0 1px 2px rgba(16, 20, 30, 0.06);
+}
+ 
+/* ---- DARK ---- */
+.theme-dark {
+  --bg: #14161a;
+  --panel-bg: #1c1f26;
+  --panel-alt: #232732;
+  --border: #333944;
+  --border-soft: #2a2f38;
+  --text: #e8eaed;
+  --text-muted: #a4abb8;
+  --text-faint: #868E9C;   /* WCAG AA: 4.52-5.49:1 on all dark backgrounds */
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+ 
+html, body { margin: 0; padding: 0; font-family: var(--font); font-size: 16px; }
+ 
+.app-root {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  transition: background 120ms linear, color 120ms linear;
+}
+ 
+/* ---- reusable chrome ---- */
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 9px 11px;
+  color: var(--text);
+}
+.panel--alt { background: var(--panel-alt); }
+ 
+.panel-label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+ 
+.placeholder {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 7px 10px;
+  background: var(--panel-alt);
+  color: var(--text-faint);
+  font-size: var(--fs-sm);
+}
+.placeholder-title { font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
+ 
+.app-title { font-size: var(--fs-title); margin: 0; color: var(--text); font-weight: 700; }
+.app-subtitle { font-size: var(--fs-sm); color: var(--text-muted); }
+ 
+.readout-heading { font-size: var(--fs-lg); font-weight: 700; margin-bottom: 10px; }
+.meta { font-size: var(--fs-sm); color: var(--text-muted); }
+ 
+/* ---- Buttons ---- */
+.btn {
+  font-family: var(--font);
+  font-size: var(--fs-xs);
+  padding: 5px 12px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-bg);
+  color: var(--text-muted);
+  box-shadow: var(--shadow);
+}
+.btn:hover { border-color: var(--text-faint); color: var(--text); }
+.btn--mini { width: 48px; padding: 1px 0; line-height: 1.4; }
+ 
+/* ---- settings popover ---- */
+.settings-wrap { position: relative; }
+.settings-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 50;
+  min-width: 190px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  padding: 12px 14px;
+}
+.settings-panel .close-x {
+  position: absolute; top: 6px; right: 8px;
+  border: none; background: none; cursor: pointer;
+  color: var(--text-faint); font-size: 14px; line-height: 1;
+}
+ 
+/* ---- party rows: the swatch is the visible control, so the native checkbox
+   is hidden but kept focusable; restore a ring on keyboard focus. ---- */
+.party-list label { font-size: var(--fs-md); }
+.party-list input[type="checkbox"]:focus-visible + span {
+  outline: 2px solid #4c8dff; outline-offset: 2px; border-radius: 3px;
+}
+ 
+/* ---- desktop/tablet-first: below the threshold, redirect rather than
+   reflow (the design brief explicitly rejects a shrunken mobile layout). */
+#small-screen-notice { display: none; }
+@media (max-width: 900px) {
+  #dashboard { display: none !important; }
+  #small-screen-notice {
+    display: block;
+    max-width: 30rem;
+    margin: 15vh auto;
+    padding: 24px;
+    text-align: center;
+    font-size: var(--fs-md);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-bg);
+  }
+}
+ 
+ 
+/* ---- Dash (Radix) dropdowns --------------------------------------
+   the menu renders in a PORTAL attached to <body>, outside #app-root, so
+   theme variables scoped to the wrapper never reach it. :has() lifts the
+   active palette onto <body> so portalled content inherits it too. */
+body:has(.app-root.theme-dark) {
+  --panel-bg: #1c1f26;
+  --panel-alt: #232732;
+  --border: #333944;
+  --text: #e8eaed;
+  --text-muted: #a4abb8;
+  --text-faint: #868E9C;
+}
+body:has(.app-root.theme-light) {
+  --panel-bg: #ffffff;
+  --panel-alt: #fafafa;
+  --border: #d8dce2;
+  --text: #1d2027;
+  --text-muted: #5a616e;
+  --text-faint: #687181;
+}
+ 
+/* trigger button */
+.dash-dropdown {
+  background: var(--panel-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-size: var(--fs-md) !important;
+}
+.dash-dropdown-value,
+.dash-dropdown-value-item,
+.dash-dropdown-placeholder { color: var(--text) !important; }
+.dash-dropdown-trigger-icon { stroke: var(--text-faint) !important; }
+ 
+/* portalled menu */
+[data-radix-popper-content-wrapper] {
+  font-family: var(--font) !important;
+  font-size: var(--fs-md) !important;
+}
+[data-radix-popper-content-wrapper] > * {
+  background: var(--panel-bg) !important;
+  border: none !important;
+  outline: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  color: var(--text) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+}
+[data-radix-popper-content-wrapper] input {
+  background: var(--panel-alt) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  color: var(--text) !important;
+  margin: 4px !important;
+}
+[data-radix-popper-content-wrapper] [role="option"],
+[data-radix-popper-content-wrapper] li,
+[data-radix-popper-content-wrapper] [class*="option"],
+[data-radix-popper-content-wrapper] [class*="item"] {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+[data-radix-popper-content-wrapper] [role="option"]:hover,
+[data-radix-popper-content-wrapper] [data-highlighted],
+[data-radix-popper-content-wrapper] [class*="option"]:hover {
+  background: var(--panel-alt) !important;
+  color: var(--text) !important;
+}
+ 
+/* ---- date pickers (Dash 4.x, Radix-based — not react-dates) ----------
+   internal class names are hashed, so styling hangs off the .date-box
+   wrapper and its descendants instead. */
+.date-box, .date-box * {
+  font-family: var(--font) !important;
+  font-size: var(--fs-md) !important;
+}
+.theme-dark .date-box, .theme-dark .date-box * {
+  color: #e8eaed !important;
+  -webkit-text-fill-color: #e8eaed !important;
+  opacity: 1 !important;
+}
+.theme-light .date-box, .theme-light .date-box * {
+  color: #1d2027 !important;
+  -webkit-text-fill-color: #1d2027 !important;
+  opacity: 1 !important;
+}
+.date-box button, .date-box input, .date-box [role="combobox"] {
+  background: var(--panel-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+}
+.date-box svg { stroke: var(--text-faint) !important; fill: none !important; }
+ 
+/* ---- FORCE readable trigger text -------------------------------------
+   both Radix dropdown & react-dates set an explicit colour on their
+   inner elements, so inheriting var(--text) is not enough: the value and
+   the date inputs are targeted directly. */
+.theme-dark .dash-dropdown,
+.theme-dark .dash-dropdown *,
+.theme-dark .dash-dropdown-value,
+.theme-dark .dash-dropdown-value-item,
+.theme-dark .DateInput_input,
+.theme-dark .DateInput_input__focused {
+  color: #e8eaed !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #e8eaed !important;
+}
+.theme-light .dash-dropdown,
+.theme-light .dash-dropdown *,
+.theme-light .dash-dropdown-value,
+.theme-light .dash-dropdown-value-item,
+.theme-light .DateInput_input,
+.theme-light .DateInput_input__focused {
+  color: #1d2027 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #1d2027 !important;
+}
+ 
+/* placeholders stay muted but readable */
+.theme-dark .DateInput_input::placeholder { color: #a4abb8 !important; }
+.theme-light .DateInput_input::placeholder { color: #5a616e !important; }
+ 
+/* ---- Date picker calendar (portalled to body, so it needs its own
+   rules — the .date-box wrapper does not contain it) ---- */
+[class*="dash-datepicker"] {
+  font-family: var(--font) !important;
+  font-size: var(--fs-md) !important;
+}
+body:has(.theme-dark) [class*="dash-datepicker-calendar"],
+body:has(.theme-dark) [class*="dash-datepicker-popover"] {
+  background: var(--panel-bg) !important;
+  outline: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+}
+/* selectable day numbers */
+body:has(.theme-dark) [class*="dash-datepicker"] button:not([disabled]),
+body:has(.theme-dark) [class*="dash-datepicker"] td:not([disabled]) {
+  color: #e8eaed !important;
+  -webkit-text-fill-color: #e8eaed !important;
+  opacity: 1 !important;
+}
+/* out-of-range days stay dim, but readable enough to orient by */
+body:has(.theme-dark) [class*="dash-datepicker"] button[disabled],
+body:has(.theme-dark) [class*="dash-datepicker"] [aria-disabled="true"] {
+  color: #6b7280 !important;
+  -webkit-text-fill-color: #6b7280 !important;
+  opacity: 1 !important;
+}
+/* weekday headers and the month/year controls */
+body:has(.theme-dark) [class*="dash-datepicker"] th,
+body:has(.theme-dark) [class*="dash-datepicker"] input,
+body:has(.theme-dark) [class*="dash-datepicker"] select {
+  color: #e8eaed !important;
+  -webkit-text-fill-color: #e8eaed !important;
+  background: var(--panel-alt) !important;
+}
+ 
+/* ---- Date picker trigger (Dash 4.x) ---- */
+.dash-datepicker-input-wrapper,
+.dash-datepicker-input-wrapper * {
+  background-color: var(--panel-bg) !important;
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.dash-datepicker-input-wrapper {
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+}
+.dash-datepicker-input-wrapper input {
+  border: none !important;
+  font-family: var(--font) !important;
+  font-size: var(--fs-md) !important;
+  padding: 4px 8px !important;
+}
+.dash-datepicker-caret-icon {
+  stroke: var(--text-faint) !important;
+  fill: none !important;
+  background: transparent !important;
+}
+.dash-datepicker-input-wrapper button {
+  background: transparent !important;
+  border: none !important;
+}
+ 

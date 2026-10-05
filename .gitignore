@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+*.sqlite
+.DS_Store
+data_cache/
+*_preview.html
+
