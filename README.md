@@ -2,17 +2,12 @@
 
 A UK Westminster voting-intention poll aggregator. It collects published opinion polls,
 models the underlying trend per-party with sample-size-weighted local regression, and
-draws an uncertainty band around each estimate - so that the picture it presents is a
+draws an uncertainty band around each estimate -- so that the picture it presents is a
 PoP showing both trend *and* confidence levels according to the data.
 
 Built as a BSc Computer Science final-year project, achieving **90%**.
 
 May be converted to React when I have the time, to optimise load times and interactivity. 
-
-![Python](https://img.shields.io/badge/python-3.11+-blue)
-![Dash](https://img.shields.io/badge/dash-plotly-brightgreen)
-![Tests](https://img.shields.io/badge/tests-81%20passing-success)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ---
 
@@ -29,12 +24,11 @@ May be converted to React when I have the time, to optimise load times and inter
 - **Distinguishes absence from zero** throughout: a party a pollster did not
   prompt for is recorded as missing, never as 0%, so it is excluded from the
   model rather than dragging the trend down.
-- **Surfaces provenance** - every poll carries its source, fieldwork dates,
+- **Surfaces provenance** -- every poll carries its source, fieldwork dates,
   sample size and methodology, visible in the interface rather than buried.
 
 The interface is an interactive dashboard: the timeline can be zoomed in on, parties isolated,
-pollsters filtered by, dates pinned to inspect polls in fieldwork, net change read between two dates,
-and political events seen marked on the timeline.
+pollsters filtered by, dates pinned to inspect polls in fieldwork, net change read between two dates, and political events seen marked on the timeline.
 
 ---
 
